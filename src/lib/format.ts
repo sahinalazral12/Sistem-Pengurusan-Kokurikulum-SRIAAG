@@ -97,11 +97,18 @@ export const warnaStatusKehadiran: Record<string, string> = {
 
 export const senaraiStatusKehadiran = ["HADIR", "TIDAK_HADIR", "LEWAT", "SAKIT", "URUSAN_RASMI"];
 
-// Helper API fetch dengan kredensial
+// Helper API fetch dengan kredensial + fallback header sesi
+// Cookie HTTP-only adalah utama; jika cookie disekat oleh gateway/preview,
+// header X-SPK-Session (dari localStorage) digunakan sebagai fallback.
 export async function apiFetch<T>(url: string, options?: RequestInit): Promise<T> {
+  const sesiToken = typeof window !== "undefined" ? window.localStorage.getItem("spk_sesi_token") : null;
   const res = await fetch(url, {
     credentials: "include",
-    headers: { "Content-Type": "application/json", ...(options?.headers ?? {}) },
+    headers: {
+      "Content-Type": "application/json",
+      ...(sesiToken ? { "x-spk-session": sesiToken } : {}),
+      ...(options?.headers ?? {}),
+    },
     ...options,
   });
   if (!res.ok) {

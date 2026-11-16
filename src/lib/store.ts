@@ -74,7 +74,18 @@ export const useAppStore = create<AppState>((set) => ({
       laporanIdAktif: opts?.laporanId ?? null,
     }),
   logKeluar: async () => {
-    await fetch("/api/auth/logout", { method: "POST", credentials: "include" });
+    try {
+      await fetch("/api/auth/logout", {
+        method: "POST",
+        credentials: "include",
+        headers: { "Content-Type": "application/json" },
+      });
+    } catch (e) {
+      console.error("RALAT logKeluar:", e);
+    }
+    if (typeof window !== "undefined") {
+      window.localStorage.removeItem("spk_sesi_token");
+    }
     queryClient.clear();
     set({ pengguna: null, paparan: "papan-pemuka", unitIdAktif: null, sesiIdAktif: null, laporanIdAktif: null });
   },

@@ -60,10 +60,14 @@ export function LoginScreen() {
     }
     setLoading(true);
     try {
-      const data = await apiFetch<{ pengguna: { id: string; email: string; nama: string; peranan: "GURU" | "PK" | "GB" | "ADMIN" } }>("/api/auth/login", {
+      const data = await apiFetch<{ pengguna: { id: string; email: string; nama: string; peranan: "GURU" | "PK" | "GB" | "ADMIN" }; sesiToken?: string }>("/api/auth/login", {
         method: "POST",
         body: JSON.stringify({ email: emel, kataLaluan: kunci }),
       });
+      // Simpan sesiToken di localStorage sebagai fallback (jika cookie disekat)
+      if (data.sesiToken && typeof window !== "undefined") {
+        window.localStorage.setItem("spk_sesi_token", data.sesiToken);
+      }
       setPengguna(data.pengguna);
       toast.success(`Selamat datang, ${data.pengguna.nama}!`);
     } catch (err: any) {

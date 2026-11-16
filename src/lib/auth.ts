@@ -1,9 +1,10 @@
-// Utiliti auth: sesi berasaskan cookie HTTP-only (simulasi)
+// Utiliti auth: sesi berasaskan cookie HTTP-only + fallback header X-SPK-Session
 // Pengesahan terhadap data dummy Prisma. Kata laluan tidak di-hash kerana ini prototaip.
-import { cookies } from "next/headers";
+import { cookies, headers } from "next/headers";
 import { db } from "./db";
 
 export const SESSION_COOKIE = "spk_session";
+export const SESSION_HEADER = "x-spk-session";
 export const SESSION_TTL_MS = 30 * 60 * 1000; // 30 minit tidak aktif (FR-04)
 
 export type Peranan = "GURU" | "PK" | "GB" | "ADMIN";
@@ -17,9 +18,17 @@ export interface SesiPengguna {
   interaksiTerakhir: number;
 }
 
+// Dapatkan sesi dari cookie ATAU header (fallback jika cookie disekat)
 export async function dapatPenggunaSesi(): Promise<SesiPengguna | null> {
   const cookieStore = await cookies();
-  const raw = cookieStore.get(SESSION_COOKIE)?.value;
+  let raw = cookieStore.get(SESSION_COOKIE)?.value;
+
+  // Fallback: baca dari header X-SPK-Session (jika cookie disekat oleh browser/gateway)
+  if (!raw) {
+    const headerStore = await headers();
+    raw = headerStore.get(SESSION_HEADER) ?? undefined;
+  }
+
   if (!raw) return null;
   try {
     const sesi = JSON.parse(raw) as SesiPengguna;
@@ -36,7 +45,8 @@ export async function dapatPenggunaSesi(): Promise<SesiPengguna | null> {
 
 export async function tetapSesiPengguna(sesi: SesiPengguna) {
   const cookieStore = await cookies();
-  cookieStore.set(SESSION_COOKIE, JSON.stringify(sesi), {
+  const sesiStr = JSON.stringify(sesi);
+  cookieStore.set(SESSION_COOKIE, sesiStr, {
     httpOnly: true,
     sameSite: "lax",
     path: "/",
@@ -81,11 +91,16 @@ export function respRalat(mesej: string, status = 400) {
   return Response.json({ ralat: mesej }, { status });
 }
 
-// Helper log audit
+// Helper log audit (dengan ralat tidak fatal)
 export async function logAudit(penggunaId: string | null, tindakan: string, entiti: string, entitiId?: string, butiran?: string) {
-  await db.logAudit.create({
-    data: { penggunaId, tindakan, entiti, entitiId, butiran },
-  });
+  try {
+    await db.logAudit.create({
+      data: { penggunaId, tindakan, entiti, entitiId, butiran },
+    });
+  } catch (e) {
+    // log audit tidak fatal - jangan gagalkan operasi utama
+    console.error("RALAT logAudit (tidak fatal):", e);
+  }
 }
 
 // Helper: dapat pengguna penuh dari sesi
