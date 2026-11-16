@@ -1,0 +1,924 @@
+SEKOLAH RENDAH AL AMIN, GOMBAK
+
+Gombak, Selangor
+
+DOKUMEN KEPERLUAN PRODUK (PRD)
+
+Sistem Pengurusan Kokurikulum (SPK)
+
+Modul Laporan Guru dan Kehadiran Murid (Tahap 2: Tahun 4 hingga 6)
+
+  -----------------------------------------------------------------------
+  Perkara               Butiran
+  --------------------- -------------------------------------------------
+  Versi                 1.1 (Tahap 2 sahaja, Draf Untuk Kelulusan)
+
+  Tarikh                16 November 2026
+
+  Disediakan oleh       Jurutera Perisian / Pembangun Sistem
+
+  Pemilik Produk        Penolong Kanan Kokurikulum
+
+  Teknologi Teras       React (frontend) + pangkalan data dummy (mock)
+
+  Alat Pembangunan      z.ai dengan model GLM 5.2
+
+  Status                Prototaip / Bukti Konsep (PoC)
+  -----------------------------------------------------------------------
+
+Kandungan
+
+1. Ringkasan Eksekutif
+
+Dokumen ini menggariskan keperluan produk bagi Sistem Pengurusan
+Kokurikulum (SPK) di Sekolah Rendah Al Amin, Gombak, khusus bagi murid
+Tahap 2 sahaja (Darjah 4, 5 dan 6). Sistem ini membolehkan guru
+penasihat merekod kehadiran murid dan menyediakan laporan aktiviti
+kokurikulum secara digital, menggantikan proses manual (buku kehadiran,
+borang kertas dan hamparan berasingan) yang memakan masa dan terdedah
+kepada kesilapan.
+
+Fasa semasa ialah pembangunan prototaip yang berfungsi sepenuhnya di
+sisi pelanggan (frontend) menggunakan React dan pangkalan data dummy
+(data contoh), sebelum dinilai oleh pihak pentadbir sekolah untuk dinaik
+taraf kepada pelayan dan pangkalan data sebenar.
+
+2. Latar Belakang dan Pernyataan Masalah
+
+2.1 Latar Belakang
+
+Setiap murid Tahap 2 (Tahun 4 hingga Tahun 6) di sekolah ini dikehendaki
+menyertai sekurang-kurangnya satu unit beruniform, satu kelab/persatuan
+dan satu sukan/permainan. Guru penasihat perlu merekod kehadiran setiap
+sesi serta menyediakan laporan aktiviti dan penilaian penglibatan murid
+pada akhir semester.
+
+2.2 Masalah Semasa
+
+-   Kehadiran direkod pada kertas dan dimasukkan semula ke dalam
+    sistem/hamparan, menyebabkan kerja berganda dan kesilapan kemasukan
+    data.
+
+-   Guru kerap mengambil masa lama untuk menaip laporan aktiviti dan
+    penilaian murid, terutama menjelang akhir semester.
+
+-   Penyelaras kokurikulum sukar memantau unit mana yang belum
+    menghantar laporan atau kehadiran.
+
+-   Tiada paparan ringkas peratus kehadiran murid bagi tujuan makluman
+    kepada ibu bapa dan penilaian.
+
+-   Data bertaburan dalam pelbagai fail; sukar dijejak, dicari dan
+    disandarkan.
+
+3. Objektif dan Metrik Kejayaan
+
+  --------------------------------------------------------------------------
+  Objektif              Metrik Kejayaan                 Sasaran
+  --------------------- ------------------------------- --------------------
+  Mempercepat kemasukan Masa merekod kehadiran satu     Kurang 2 minit
+  kehadiran             sesi (30 murid)                 
+
+  Mempercepat           Masa menyiapkan laporan         Kurang 10 minit
+  penyediaan laporan    aktiviti                        (daripada kira-kira
+                                                        30 minit)
+
+  Meningkatkan          Peratus laporan dihantar dalam  Sekurang-kurangnya
+  pematuhan             3 hari bekerja selepas sesi     90%
+  penghantaran                                          
+
+  Memudahkan pemantauan Masa penyelaras menjana         Kurang 1 minit
+                        ringkasan kehadiran semester    
+
+  Penerimaan pengguna   Skor kepuasan guru dalam ujian  Sekurang-kurangnya 4
+                        penerimaan (UAT)                daripada 5
+
+  Kualiti data          Ralat kemasukan data semasa UAT Kurang 2%
+  --------------------------------------------------------------------------
+
+4. Skop Projek
+
+4.1 Dalam Skop (Fasa 1 - Prototaip)
+
+-   Log masuk berasaskan peranan (data dummy, tanpa pengesahan sebenar).
+
+-   Pengurusan unit kokurikulum dan keahlian murid Tahap 2 (Tahun 4
+    hingga 6) sahaja.
+
+-   Penjadualan sesi aktiviti.
+
+-   Rekod kehadiran murid bagi setiap sesi.
+
+-   Laporan aktiviti guru dengan aliran kelulusan.
+
+-   Laporan penilaian penglibatan murid mengikut semester.
+
+-   Papan pemuka dan ringkasan statistik kehadiran.
+
+-   Eksport laporan dan kehadiran ke CSV dan cetakan PDF melalui
+    pelayar.
+
+-   Pangkalan data dummy tempatan dengan data contoh yang realistik.
+
+4.2 Luar Skop (Fasa 1)
+
+-   Pelayan belakang (backend) dan pangkalan data produksi.
+
+-   Murid Tahap 1 (Tahun 1 hingga 3) dan prasekolah; mereka tidak
+    dimasukkan dalam sistem ini.
+
+-   Integrasi dengan sistem rasmi Kementerian Pendidikan Malaysia
+    (contohnya APDM) atau sistem sekolah sedia ada.
+
+-   Portal atau aplikasi ibu bapa.
+
+-   Pengimbas kod QR/biometrik untuk kehadiran (dicadangkan untuk Fasa
+    3).
+
+-   Pengurusan kewangan, yuran dan pertandingan peringkat daerah/negeri.
+
+5. Pengguna dan Peranan
+
+  ------------------------------------------------------------------------
+  Peranan         Penerangan               Keupayaan Utama
+  --------------- ------------------------ -------------------------------
+  Guru Penasihat  Guru yang                Merekod kehadiran, menulis
+                  bertanggungjawab ke atas laporan aktiviti dan penilaian
+                  satu atau lebih unit     murid bagi unit sendiri
+                  kokurikulum              
+
+  Penyelaras      Penolong Kanan           Menyemak dan meluluskan
+  Kokurikulum (PK Kokurikulum atau guru    laporan, memantau semua unit,
+  Kokurikulum)    yang dilantik            mengurus unit dan keahlian,
+                                           mengeksport laporan
+
+  Guru Besar      Pengurusan tertinggi     Paparan baca sahaja bagi papan
+                  sekolah                  pemuka dan laporan yang
+                                           diluluskan
+
+  Pentadbir       Guru ICT / penyelenggara Mengurus akaun pengguna,
+  Sistem          sistem                   tetapan sesi persekolahan, set
+                                           semula data dummy
+  ------------------------------------------------------------------------
+
+6. Cerita Pengguna
+
+  ---------------------------------------------------------------------------
+  ID      Sebagai...    Saya mahu...                    Supaya...
+  ------- ------------- ------------------------------- ---------------------
+  US-01   Guru          melihat senarai unit dan sesi   saya tahu aktiviti
+          Penasihat     saya pada skrin utama           yang perlu diuruskan
+                                                        hari ini
+
+  US-02   Guru          menanda kehadiran semua murid   kehadiran siap dalam
+          Penasihat     dengan satu ketikan (Semua      masa singkat
+                        Hadir) dan ubah suai            
+                        pengecualian                    
+
+  US-03   Guru          menulis laporan aktiviti        laporan konsisten dan
+          Penasihat     menggunakan templat             cepat disiapkan
+
+  US-04   Guru          menyimpan laporan sebagai draf  saya tidak kehilangan
+          Penasihat     dan menyambungnya kemudian      kerja jika terganggu
+
+  US-05   Guru          memberi penilaian penglibatan   rekod penilaian
+          Penasihat     setiap murid pada hujung        lengkap dan tepat
+                        semester                        
+
+  US-06   PK            melihat unit yang belum         saya boleh membuat
+          Kokurikulum   menghantar kehadiran/laporan    peringatan awal
+
+  US-07   PK            meluluskan atau mengembalikan   kualiti laporan
+          Kokurikulum   laporan dengan komen            terjamin
+
+  US-08   PK            mengeksport kehadiran dan       data boleh dikongsi
+          Kokurikulum   laporan ke CSV/PDF              dan diarkibkan
+
+  US-09   Guru Besar    melihat ringkasan penyertaan    keputusan pengurusan
+                        dan kehadiran seluruh sekolah   berasaskan data
+
+  US-10   Pentadbir     menetap semula data dummy       demonstrasi dan ujian
+          Sistem        kepada keadaan asal             boleh diulang
+  ---------------------------------------------------------------------------
+
+7. Keperluan Fungsian
+
+Keutamaan menggunakan kaedah MoSCoW: M (Mesti), S (Sepatutnya), C
+(Boleh), W (Tidak Kali Ini).
+
+7.1 Pengesahan dan Kawalan Akses
+
+  -------------------------------------------------------------------------
+  ID      Keperluan                                             Keutamaan
+  ------- ----------------------------------------------------- -----------
+  FR-01   Sistem menyediakan skrin log masuk dengan nama        M
+          pengguna dan kata laluan (pengesahan simulasi         
+          terhadap data dummy).                                 
+
+  FR-02   Sistem memaparkan menu dan tindakan mengikut peranan  M
+          pengguna (RBAC).                                      
+
+  FR-03   Guru Penasihat hanya boleh melihat dan mengubah data  M
+          unit yang diamanahkan kepadanya.                      
+
+  FR-04   Sesi tamat secara automatik selepas 30 minit tidak    S
+          aktif.                                                
+  -------------------------------------------------------------------------
+
+7.2 Pengurusan Unit dan Keahlian
+
+  --------------------------------------------------------------------------
+  ID       Keperluan                                             Keutamaan
+  -------- ----------------------------------------------------- -----------
+  FR-05    Papar, tambah, ubah dan nyahaktifkan unit kokurikulum M
+           (kategori: Badan Beruniform, Kelab/Persatuan,         
+           Sukan/Permainan).                                     
+
+  FR-06    Tetapkan seorang Guru Penasihat Utama dan Guru        M
+           Penasihat Pembantu bagi setiap unit.                  
+
+  FR-07    Tambah/keluarkan murid dalam unit; tetapkan jawatan   M
+           (Pengerusi, Naib, Setiausaha, Bendahari, Ahli).       
+
+  FR-08    Cari dan tapis murid mengikut nama, kelas, tahun (4,  M
+           5, 6) dan unit.                                       
+
+  FR-08A   Sistem hanya menerima murid Tahun 4, 5 dan 6;         M
+           pendaftaran atau import murid Tahun 1 hingga 3        
+           ditolak dengan mesej ralat.                           
+
+  FR-09    Sistem memberi amaran jika murid tidak menyertai      S
+           ketiga-tiga kategori kokurikulum.                     
+
+  FR-10    Import senarai murid daripada fail CSV.               C
+  --------------------------------------------------------------------------
+
+7.3 Penjadualan Sesi
+
+  -------------------------------------------------------------------------
+  ID      Keperluan                                             Keutamaan
+  ------- ----------------------------------------------------- -----------
+  FR-11   Cipta sesi aktiviti: tarikh, masa mula/tamat, tempat, M
+          tajuk, jenis (mingguan/khas).                         
+
+  FR-12   Sokong sesi berulang (contoh: setiap Rabu 2:30 petang S
+          hingga akhir semester).                               
+
+  FR-13   Batalkan atau tangguh sesi dengan sebab yang          M
+          direkodkan.                                           
+
+  FR-14   Paparan kalendar bulanan dan senarai bagi sesi.       S
+  -------------------------------------------------------------------------
+
+7.4 Rekod Kehadiran
+
+  -------------------------------------------------------------------------
+  ID      Keperluan                                             Keutamaan
+  ------- ----------------------------------------------------- -----------
+  FR-15   Senarai murid dimuat secara automatik berdasarkan     M
+          keahlian unit bagi sesi terpilih.                     
+
+  FR-16   Status kehadiran: Hadir, Tidak Hadir, Lewat, Sakit    M
+          (dengan MC), Mewakili Sekolah / Urusan Rasmi.         
+
+  FR-17   Butang 'Tanda Semua Hadir' dan tukar status individu  M
+          dengan satu ketikan.                                  
+
+  FR-18   Ruang catatan pilihan bagi setiap murid (contoh:      S
+          sebab tidak hadir).                                   
+
+  FR-19   Kehadiran boleh disimpan sebagai draf dan dikunci     M
+          selepas dihantar; hanya PK Kokurikulum boleh membuka  
+          kunci.                                                
+
+  FR-20   Pengiraan automatik peratus kehadiran murid mengikut  M
+          unit, bulan dan semester.                             
+
+  FR-21   Penanda amaran bagi murid dengan kehadiran di bawah   S
+          80%.                                                  
+
+  FR-22   Susulan kehadiran: sesi lepas boleh dikemas kini      S
+          dalam tempoh 7 hari dengan rekod audit.               
+  -------------------------------------------------------------------------
+
+7.5 Laporan Aktiviti Guru
+
+  -------------------------------------------------------------------------
+  ID      Keperluan                                             Keutamaan
+  ------- ----------------------------------------------------- -----------
+  FR-23   Borang laporan aktiviti: tajuk, tarikh, tempat,       M
+          objektif, ringkasan aktiviti, hasil/pencapaian,       
+          masalah, cadangan penambahbaikan.                     
+
+  FR-24   Medan bilangan hadir dan peratus kehadiran diisi      M
+          automatik daripada rekod kehadiran sesi.              
+
+  FR-25   Muat naik sehingga 5 gambar sokongan (disimulasi      S
+          dengan URL/pratonton tempatan).                       
+
+  FR-26   Aliran status: Draf, Dihantar, Dikembalikan,          M
+          Diluluskan.                                           
+
+  FR-27   PK Kokurikulum boleh meluluskan atau mengembalikan    M
+          laporan dengan komen.                                 
+
+  FR-28   Penyimpanan draf automatik setiap 30 saat.            S
+
+  FR-29   Templat laporan mengikut jenis aktiviti (perhimpunan  C
+          unit, perkhemahan, latihan sukan, lawatan).           
+
+  FR-30   Cetak/eksport laporan dalam format A4 dengan kepala   M
+          surat sekolah.                                        
+  -------------------------------------------------------------------------
+
+7.6 Penilaian Penglibatan Murid
+
+  -------------------------------------------------------------------------
+  ID      Keperluan                                             Keutamaan
+  ------- ----------------------------------------------------- -----------
+  FR-31   Guru menilai setiap murid setiap semester: tahap      M
+          penglibatan (Cemerlang, Baik, Memuaskan, Perlu        
+          Perhatian), jawatan dan catatan guru.                 
+
+  FR-32   Peratus kehadiran dipaparkan sebagai rujukan semasa   M
+          penilaian.                                            
+
+  FR-33   Penilaian secara pukal bagi satu unit dalam satu      S
+          skrin jadual.                                         
+
+  FR-34   Jana ringkasan rekod kokurikulum bagi seorang murid   S
+          (bagi buku laporan).                                  
+  -------------------------------------------------------------------------
+
+7.7 Papan Pemuka dan Pelaporan
+
+  -------------------------------------------------------------------------
+  ID      Keperluan                                             Keutamaan
+  ------- ----------------------------------------------------- -----------
+  FR-35   Papan pemuka guru: sesi hari ini, laporan tertunggak, M
+          murid berisiko.                                       
+
+  FR-36   Papan pemuka PK/Guru Besar: statistik penyertaan,     M
+          purata kehadiran mengikut unit, status penghantaran   
+          laporan.                                              
+
+  FR-37   Carta bar/garis untuk trend kehadiran bulanan.        S
+
+  FR-38   Eksport data kehadiran dan laporan ke CSV; cetak ke   M
+          PDF.                                                  
+
+  FR-39   Log audit: siapa mengubah apa dan bila (disimpan      S
+          dalam data dummy).                                    
+
+  FR-40   Pentadbir boleh menetap semula pangkalan data dummy.  M
+  -------------------------------------------------------------------------
+
+8. Keperluan Bukan Fungsian
+
+  -----------------------------------------------------------------------------
+  Kategori              Keperluan
+  --------------------- -------------------------------------------------------
+  Prestasi              Halaman utama dimuat kurang 2 saat; simpanan kehadiran
+                        30 murid kurang 1 saat pada rangkaian sekolah.
+
+  Kebolehgunaan         Antara muka Bahasa Malaysia sepenuhnya; pengguna baharu
+                        boleh merekod kehadiran tanpa latihan formal.
+
+  Responsif             Berfungsi pada komputer riba, tablet dan telefon pintar
+                        (reka bentuk mobile-first kerana guru merekod di
+                        padang).
+
+  Kebolehcapaian        Mematuhi WCAG 2.1 AA: kontras warna, navigasi papan
+                        kekunci, label borang.
+
+  Keselamatan           Peranan dikuatkuasakan pada setiap laluan; tiada data
+                        peribadi sebenar dalam prototaip; kata laluan dummy
+                        tidak dikodkan keras dalam kod UI.
+
+  Privasi               Reka bentuk selaras Akta Perlindungan Data Peribadi
+                        2010 (PDPA): data minimum murid, akses mengikut
+                        peranan, bersedia untuk penyulitan pada Fasa 2.
+
+  Keserasian            Chrome, Edge, Safari dan Firefox versi terkini.
+
+  Kebolehselenggaraan   Kod modular, TypeScript, lapisan akses data diasingkan
+                        supaya mock boleh digantikan dengan API sebenar tanpa
+                        mengubah komponen UI.
+
+  Kebolehpercayaan      Data dummy disimpan secara tempatan dan boleh ditetap
+                        semula; pengendalian ralat dengan mesej mesra dalam
+                        Bahasa Malaysia.
+  -----------------------------------------------------------------------------
+
+9. Aliran Kerja Utama
+
+9.1 Aliran Kehadiran
+
+1.  Guru log masuk dan memilih sesi hari ini daripada papan pemuka.
+
+2.  Sistem memuatkan senarai ahli unit; guru menekan 'Tanda Semua
+    Hadir'.
+
+3.  Guru mengubah status murid yang tidak hadir/lewat/sakit dan menambah
+    catatan.
+
+4.  Guru menyimpan sebagai draf atau menghantar; kehadiran dikunci
+    selepas dihantar.
+
+5.  Statistik kehadiran dikemas kini dan peratus murid dikira semula.
+
+9.2 Aliran Laporan Aktiviti
+
+6.  Guru memilih sesi yang telah direkod kehadirannya dan memilih 'Cipta
+    Laporan'.
+
+7.  Medan kehadiran diisi automatik; guru melengkapkan ringkasan, hasil,
+    masalah dan cadangan.
+
+8.  Guru menyimpan Draf atau menekan Hantar (status: Dihantar).
+
+9.  PK Kokurikulum menyemak: Luluskan (status: Diluluskan) atau
+    Kembalikan dengan komen (status: Dikembalikan).
+
+10. Guru membuat pindaan jika dikembalikan dan menghantar semula.
+
+9.3 Aliran Penilaian Semester
+
+11. Pada hujung semester, sistem membuka tetingkap penilaian untuk
+    setiap unit.
+
+12. Guru menilai setiap murid dengan rujukan peratus kehadiran.
+
+13. Guru menghantar; PK Kokurikulum menyemak dan mengunci penilaian.
+
+10. Seni Bina dan Teknologi
+
+10.1 Tindanan Teknologi (Tech Stack)
+
+  -----------------------------------------------------------------------
+  Lapisan         Pilihan                    Justifikasi
+  --------------- -------------------------- ----------------------------
+  Rangka kerja UI React 18 + Vite +          Komponen boleh guna semula,
+                  TypeScript                 pembangunan pantas
+
+  Penghalaan      React Router               Laluan berasaskan peranan
+
+  Pengurusan      TanStack Query + Zustand   Pengurusan data pelayan
+  keadaan         (atau React Context)       simulasi dan sesi pengguna
+
+  Gaya            Tailwind CSS + komponen    Reka bentuk konsisten,
+                  shadcn/ui                  responsif dan mudah diakses
+
+  Borang &        React Hook Form + Zod      Pengesahan input yang kukuh
+  pengesahan                                 
+
+  Carta           Recharts                   Papan pemuka kehadiran
+
+  API simulasi    MSW (Mock Service Worker)  Meniru API sebenar; mudah
+                  dengan lapisan             digantikan kelak
+                  perkhidmatan REST          
+
+  Pangkalan data  Fail JSON benih (seed) +   Data bertahan selepas muat
+  dummy           IndexedDB/localStorage     semula dan boleh ditetap
+                  (melalui Dexie)            semula
+
+  Eksport         PapaParse (CSV) dan CSS    Eksport tanpa pelayan
+                  cetakan/jsPDF              
+
+  Ujian           Vitest + React Testing     Jaminan kualiti
+                  Library + Playwright (E2E) 
+  -----------------------------------------------------------------------
+
+10.2 Struktur Projek Dicadangkan
+
+src/
+
+app/ (router, providers, layout)
+
+features/
+
+auth/ (log masuk, RBAC)
+
+units/ (unit & keahlian)
+
+sessions/ (sesi aktiviti)
+
+attendance/ (kehadiran)
+
+reports/ (laporan aktiviti)
+
+assessments/ (penilaian murid)
+
+dashboard/ (papan pemuka)
+
+mocks/
+
+db/ (skema Dexie + seed.json)
+
+handlers/ (MSW handlers)
+
+services/ (api client - boleh tukar ke API sebenar)
+
+components/ui/ (komponen berkongsi)
+
+lib/ (utiliti, format tarikh ms-MY)
+
+10.3 Prinsip Seni Bina
+
+-   Komponen UI tidak mengakses pangkalan data secara terus; semua
+    melalui lapisan perkhidmatan (services) supaya migrasi ke backend
+    sebenar (Node/Laravel + PostgreSQL) hanya menukar pelaksanaan
+    lapisan ini.
+
+-   Semua teks UI diasingkan dalam fail terjemahan (ms-MY) bagi
+    memudahkan penyelenggaraan.
+
+-   Format tarikh dan masa mengikut zon waktu Asia/Kuala_Lumpur.
+
+11. Model Data (Pangkalan Data Dummy)
+
+  ---------------------------------------------------------------------------
+  Jadual             Medan Utama                          Catatan
+  ------------------ ------------------------------------ -------------------
+  pengguna           id, nama, emel, peranan,             Peranan: GURU, PK,
+                     kata_laluan_dummy, aktif             GB, ADMIN
+
+  murid              id, no_murid, nama, jantina, tahun   Data rekaan sahaja;
+                     (4-6), kelas, aktif                  hanya Tahap 2
+
+  unit               id, nama, kategori, guru_utama_id,   Kategori:
+                     guru_pembantu_id, hari, masa, aktif  BERUNIFORM, KELAB,
+                                                          SUKAN
+
+  keahlian           id, murid_id, unit_id, jawatan,      Satu murid boleh
+                     tarikh_sertai, aktif                 dalam banyak unit
+
+  sesi               id, unit_id, tajuk, tarikh,          Status: DIRANCANG,
+                     masa_mula, masa_tamat, tempat,       SELESAI, DIBATALKAN
+                     status                               
+
+  kehadiran          id, sesi_id, murid_id, status,       Status: HADIR,
+                     catatan, dikunci                     TIDAK_HADIR, LEWAT,
+                                                          SAKIT, URUSAN_RASMI
+
+  laporan_aktiviti   id, sesi_id, objektif, ringkasan,    Status: DRAF,
+                     hasil, masalah, cadangan, gambar[],  DIHANTAR,
+                     status, komen_semakan, dicipta_oleh, DIKEMBALIKAN,
+                     tarikh_hantar                        DILULUSKAN
+
+  penilaian          id, murid_id, unit_id, semester,     Tahap: CEMERLANG,
+                     tahun, tahap, jawatan, catatan,      BAIK, MEMUASKAN,
+                     status                               PERLU_PERHATIAN
+
+  tetapan            id, tahun_akademik, semester,        Menentukan tempoh
+                     tarikh_mula, tarikh_tamat            semester
+
+  log_audit          id, pengguna_id, tindakan, entiti,   Untuk penjejakan
+                     entiti_id, masa                      perubahan
+  ---------------------------------------------------------------------------
+
+11.1 Data Benih (Seed) Dicadangkan
+
+-   6 pengguna: 3 Guru Penasihat, 1 PK Kokurikulum, 1 Guru Besar, 1
+    Pentadbir.
+
+-   8 unit: Pengakap, Kadet Polis, Puteri Islam, Kelab Robotik,
+    Persatuan Bahasa Melayu, Bola Sepak, Catur, Olahraga.
+
+-   120 murid Tahap 2 sahaja (40 setiap tahun bagi Tahun 4, 5 dan 6;
+    kelas contoh seperti 4 Amanah, 5 Bestari, 6 Cemerlang) dengan nama
+    rekaan.
+
+-   Sekurang-kurangnya 10 sesi bagi setiap unit sepanjang Semester 2,
+    dengan kehadiran 80%-95%.
+
+-   12 laporan aktiviti dalam pelbagai status; 30 rekod penilaian murid.
+
+11.2 Akaun Demonstrasi (Dummy)
+
+  ------------------------------------------------------------------------
+  Peranan               Nama Pengguna                Kata Laluan
+  --------------------- ---------------------------- ---------------------
+  Guru Penasihat        guru1@alamin.test            Demo@1234
+
+  PK Kokurikulum        pk@alamin.test               Demo@1234
+
+  Guru Besar            gb@alamin.test               Demo@1234
+
+  Pentadbir             admin@alamin.test            Demo@1234
+  ------------------------------------------------------------------------
+
+12. Reka Bentuk Skrin
+
+  --------------------------------------------------------------------------
+  Skrin              Peranan    Kandungan Utama
+  ------------------ ---------- --------------------------------------------
+  Log Masuk          Semua      Borang log masuk, pautan akaun demo
+
+  Papan Pemuka Guru  Guru       Sesi hari ini, laporan tertunggak, murid
+                                berisiko, pintasan 'Ambil Kehadiran'
+
+  Papan Pemuka PK/GB PK, GB     Kad statistik, carta kehadiran, jadual
+                                status laporan mengikut unit
+
+  Senarai Unit       PK, Guru   Jadual unit, tapisan kategori, jumlah ahli
+
+  Butiran Unit       PK, Guru   Tab: Ahli, Sesi, Laporan, Statistik
+
+  Kalendar/Senarai   Guru, PK   Paparan bulanan dan senarai; tambah/batal
+  Sesi                          sesi
+
+  Ambil Kehadiran    Guru       Senarai murid dengan butang status besar
+                                mesra sentuh, ringkasan di bahagian atas,
+                                butang simpan melekat di bawah
+
+  Borang Laporan     Guru       Borang berseksyen, medan automatik, muat
+  Aktiviti                      naik gambar, simpan draf/hantar
+
+  Semakan Laporan    PK         Pratonton laporan, butang
+                                Luluskan/Kembalikan, ruang komen
+
+  Penilaian Semester Guru       Jadual penilaian pukal dengan kehadiran
+                                sebagai rujukan
+
+  Laporan & Eksport  PK, GB     Penapis (unit, tempoh), eksport CSV, cetak
+                                PDF
+
+  Tetapan Admin      Admin      Pengguna, tempoh semester, tetapan semula
+                                data dummy
+  --------------------------------------------------------------------------
+
+12.1 Garis Panduan Reka Bentuk
+
+-   Mobile-first dengan sasaran sentuhan sekurang-kurangnya 44 px.
+
+-   Warna status konsisten: Hadir (hijau), Tidak Hadir (merah), Lewat
+    (kuning), Sakit (biru), Urusan Rasmi (ungu); sentiasa disertai
+    ikon/teks, bukan warna sahaja.
+
+-   Gunakan Bahasa Malaysia yang ringkas dan jelas pada semua label,
+    butang dan mesej ralat.
+
+-   Logo dan warna sekolah pada kepala halaman dan kepala laporan
+    cetakan.
+
+13. Kontrak API Simulasi (MSW)
+
+  ------------------------------------------------------------------------------------
+  Kaedah         Laluan                                   Fungsi
+  -------------- ---------------------------------------- ----------------------------
+  POST           /api/auth/login                          Log masuk (data dummy)
+
+  GET            /api/units                               Senarai unit mengikut
+                                                          peranan
+
+  GET/POST       /api/units/:id/members                   Lihat/tambah ahli unit
+
+  GET/POST       /api/sessions                            Senarai/cipta sesi
+
+  PATCH          /api/sessions/:id                        Ubah/batal sesi
+
+  GET/PUT        /api/sessions/:id/attendance             Dapatkan/simpan kehadiran
+                                                          sesi
+
+  GET/POST/PUT   /api/reports                             Senarai, cipta, kemas kini
+                                                          laporan aktiviti
+
+  POST           /api/reports/:id/submit | approve |      Hantar, lulus, kembalikan
+                 return                                   laporan
+
+  GET/PUT        /api/assessments                         Penilaian murid mengikut
+                                                          unit dan semester
+
+  GET            /api/dashboard/summary                   Statistik papan pemuka
+
+  GET            /api/export/attendance?unit=&from=&to=   Data eksport kehadiran
+
+  POST           /api/admin/reset                         Tetapan semula data dummy
+  ------------------------------------------------------------------------------------
+
+14. Pelan Pelaksanaan
+
+  ------------------------------------------------------------------------
+  Fasa              Tempoh         Hasil Serahan
+  ----------------- -------------- ---------------------------------------
+  0 - Persediaan    Minggu 1       Persediaan projek, reka bentuk UI,
+                                   skema data dan seed
+
+  1 - Asas          Minggu 2       Autentikasi simulasi, RBAC, layout,
+                                   modul unit dan keahlian
+
+  2 - Kehadiran     Minggu 3       Sesi, skrin ambil kehadiran, pengiraan
+                                   peratus
+
+  3 - Laporan       Minggu 4       Laporan aktiviti, aliran kelulusan,
+                                   penilaian semester
+
+  4 - Papan Pemuka  Minggu 5       Papan pemuka, carta, CSV/PDF, log audit
+  & Eksport                        
+
+  5 - Ujian & UAT   Minggu 6       Ujian unit/E2E, UAT bersama guru,
+                                   pembetulan pepijat, demonstrasi
+  ------------------------------------------------------------------------
+
+15. Panduan Membina Menggunakan z.ai (Model GLM 5.2)
+
+Bahagian ini memberi cara kerja yang disarankan apabila membina sistem
+melalui z.ai. Sila pastikan model GLM 5.2 dipilih pada antara muka z.ai
+sebelum bermula, dan semak ciri yang tersedia (contohnya penjanaan
+projek penuh atau mod kod) kerana ciri platform boleh berubah.
+
+15.1 Amalan Disyorkan
+
+-   Bina secara berfasa (mengikut Bab 14), jangan minta keseluruhan
+    sistem dalam satu arahan.
+
+-   Lampirkan atau tampal PRD ini (terutama Bab 7, 10, 11 dan 13)
+    sebagai konteks tetap pada setiap sesi.
+
+-   Minta GLM 5.2 menjana kod lengkap setiap fail, dan arahkan ia
+    menjalankan semakan sendiri (lint, jenis TypeScript) sebelum
+    menyerahkan.
+
+-   Uji hasil selepas setiap fasa; kemudian beri arahan pembetulan yang
+    spesifik.
+
+-   Simpan kod dalam Git dan buat komit selepas setiap fasa yang
+    berfungsi.
+
+15.2 Arahan Induk (Master Prompt)
+
+Anda ialah jurutera perisian kanan. Bina aplikasi web "Sistem Pengurusan
+
+Kokurikulum" untuk Sekolah Rendah Al Amin, Gombak, berdasarkan PRD
+
+yang dilampirkan.
+
+Syarat wajib:
+
+- React 18 + Vite + TypeScript, Tailwind CSS, React Router,
+
+TanStack Query, React Hook Form + Zod, Recharts.
+
+- Tiada backend. Gunakan MSW + Dexie (IndexedDB) sebagai pangkalan
+
+data dummy dengan fail seed.json (lihat Bab 11).
+
+- Semua komponen UI memanggil lapisan services; jangan akses DB
+
+terus dari komponen.
+
+- Seluruh antara muka dalam Bahasa Malaysia; tarikh format ms-MY.
+
+- Mobile-first dan mematuhi WCAG 2.1 AA.
+
+- Laksanakan RBAC: GURU, PK, GB, ADMIN.
+
+Kerjakan satu fasa setiap kali. Sistem ini hanya untuk murid Tahap 2
+(Tahun 4, 5, 6); jangan sediakan data atau pilihan Tahun 1-3. Mulakan
+dengan Fasa 1 (Bab 14):
+
+struktur projek, seed data, autentikasi simulasi, layout, modul unit
+
+dan keahlian. Berikan kod penuh setiap fail dan arahan menjalankan
+
+projek. Berhenti selepas Fasa 1 untuk saya semak.
+
+15.3 Arahan Fasa Seterusnya (Ringkas)
+
+  -----------------------------------------------------------------------
+  Fasa         Contoh Arahan
+  ------------ ----------------------------------------------------------
+  2 -          Laksanakan modul sesi dan skrin Ambil Kehadiran (FR-11
+  Kehadiran    hingga FR-22): butang 'Tanda Semua Hadir', 5 status, kunci
+               selepas hantar, pengiraan peratus, amaran bawah 80%.
+
+  3 - Laporan  Laksanakan laporan aktiviti (FR-23 hingga FR-30) dengan
+               medan kehadiran automatik, simpan draf automatik, aliran
+               Draf-Dihantar-Lulus/Kembali, dan penilaian semester (FR-31
+               hingga FR-34).
+
+  4 - Papan    Laksanakan papan pemuka guru dan PK/GB dengan Recharts,
+  pemuka       eksport CSV, cetak laporan A4 dan log audit (FR-35 hingga
+               FR-40).
+
+  5 - Kualiti  Tulis ujian Vitest bagi pengiraan peratus kehadiran dan
+               RBAC, serta ujian Playwright bagi aliran kehadiran dan
+               kelulusan laporan. Baiki semua ralat lint dan TypeScript.
+  -----------------------------------------------------------------------
+
+16. Strategi Ujian dan Kriteria Penerimaan
+
+  -----------------------------------------------------------------------
+  Jenis Ujian       Skop                                Alat
+  ----------------- ----------------------------------- -----------------
+  Ujian unit        Pengiraan peratus kehadiran,        Vitest
+                    peraturan RBAC, pengesahan borang   
+
+  Ujian komponen    Skrin kehadiran, borang laporan     React Testing
+                                                        Library
+
+  Ujian hujung ke   Log masuk, ambil kehadiran, hantar  Playwright
+  hujung            laporan, lulus laporan              
+
+  Ujian             Kontras, papan kekunci, pembaca     axe-core /
+  kebolehcapaian    skrin asas                          Lighthouse
+
+  UAT               Sekurang-kurangnya 5 guru dan 1 PK  Senarai semak UAT
+                    menjalankan senario sebenar         
+  -----------------------------------------------------------------------
+
+16.1 Kriteria Penerimaan Prototaip
+
+-   Semua keperluan berkeutamaan M (Mesti) berfungsi tanpa ralat
+    kritikal.
+
+-   Guru boleh merekod kehadiran 30 murid dalam kurang 2 minit.
+
+-   Aliran laporan Draf hingga Diluluskan berjaya dari awal hingga
+    akhir.
+
+-   Data kekal selepas muat semula pelayar dan boleh ditetap semula.
+
+-   Skor Lighthouse kebolehcapaian sekurang-kurangnya 90.
+
+-   Skor kepuasan UAT sekurang-kurangnya 4 daripada 5.
+
+17. Risiko dan Mitigasi
+
+  ------------------------------------------------------------------------
+  Risiko                     Kesan         Mitigasi
+  -------------------------- ------------- -------------------------------
+  Kod hasil AI mengandungi   Sederhana     Bina berfasa, semakan kod
+  pepijat atau tidak                       manusia, ujian automatik, lint
+  konsisten                                dan TypeScript
+
+  Data dummy tidak           Sederhana     Libatkan guru semasa mereka
+  mencerminkan keadaan                     bentuk seed; semak dalam UAT
+  sebenar                                  
+
+  Data disimpan tempatan     Rendah        Butang eksport/import data;
+  hilang jika cache          (prototaip)   tetapan semula yang jelas
+  dibersihkan                              
+
+  Guru kurang mahir          Tinggi        UI ringkas, latihan 30 minit,
+  teknologi                                panduan pantas bergambar
+
+  Isu privasi data murid     Tinggi        Hanya data rekaan dalam
+  apabila bergerak ke                      prototaip; semakan PDPA dan
+  produksi                                 kelulusan sekolah sebelum Fasa
+                                           2
+
+  Skop meluas (permintaan    Sederhana     Kawalan perubahan melalui PK
+  tambahan)                                Kokurikulum; senarai kehendak
+                                           Fasa 2
+  ------------------------------------------------------------------------
+
+18. Pelan Hala Tuju Selepas Prototaip
+
+-   Fasa 2: Backend sebenar (Node.js/Laravel), pangkalan data
+    PostgreSQL/MySQL, pengesahan selamat, hosting dalam negara jika
+    perlu.
+
+-   Fasa 3: Pengimbas kod QR untuk kehadiran, notifikasi WhatsApp/emel
+    kepada ibu bapa, portal ibu bapa.
+
+-   Fasa 4: Integrasi dengan sistem data murid sekolah, laporan
+    pertandingan dan pencapaian, analitik lanjutan.
+
+19. Glosari
+
+  -----------------------------------------------------------------------
+  Istilah           Maksud
+  ----------------- -----------------------------------------------------
+  PRD               Dokumen Keperluan Produk
+
+  PK Kokurikulum    Penolong Kanan Kokurikulum
+
+  RBAC              Kawalan akses berasaskan peranan
+
+  MSW               Mock Service Worker, alat menyimulasi API dalam
+                    pelayar
+
+  UAT               Ujian Penerimaan Pengguna
+
+  PDPA              Akta Perlindungan Data Peribadi 2010 (Malaysia)
+
+  Seed              Data awal yang dimuatkan ke pangkalan data dummy
+
+  MoSCoW            Kaedah keutamaan: Must, Should, Could, Won't
+  -----------------------------------------------------------------------
+
+20. Kelulusan
+
+  ------------------------------------------------------------------------
+  Nama                  Jawatan               Tandatangan       Tarikh
+  --------------------- --------------------- ----------------- ----------
+                        Penolong Kanan                          
+                        Kokurikulum                             
+
+                        Guru Besar                              
+
+                        Jurutera Perisian /                     
+                        Pembangun                               
+  ------------------------------------------------------------------------

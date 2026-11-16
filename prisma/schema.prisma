@@ -1,0 +1,189 @@
+// Sistem Pengurusan Kokurikulum (SPK) - Sekolah Rendah Islam Al Amin, Gombak
+// Skema pangkalan data dummy untuk prototaip
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// ---- Pengguna & Peranan (RBAC) ----
+model Pengguna {
+  id              String   @id @default(cuid())
+  email           String   @unique
+  nama            String
+  peranan         String   @default("GURU") // GURU | PK | GB | ADMIN
+  kataLaluanDummy String   @default("Demo@1234")
+  aktif           Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  // hubungan
+  unitSebagaiUtama     Unit[]      @relation("UnitGuruUtama")
+  unitSebagaiPembantu  Unit[]      @relation("UnitGuruPembantu")
+  laporanDicipta       LaporanAktiviti[]
+  penilaianDicipta     Penilaian[]
+  logAudit             LogAudit[]
+}
+
+// ---- Murid (Tahap 2: Tahun 4, 5, 6 sahaja) ----
+model Murid {
+  id        String   @id @default(cuid())
+  noMurid   String   @unique
+  nama      String
+  jantina   String   @default("L") // L | P
+  tahun     Int      // 4 | 5 | 6
+  kelas     String
+  aktif     Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  keahlian   Keahlian[]
+  kehadiran  Kehadiran[]
+  penilaian  Penilaian[]
+}
+
+// ---- Unit Kokurikulum ----
+model Unit {
+  id              String   @id @default(cuid())
+  nama            String
+  kategori        String   // BERUNIFORM | KELAB | SUKAN
+  guruUtamaId     String?
+  guruPembantuId  String?
+  hari            String?  // ISNIN | SELASA | RABU | KHAMIS | JUMAAT | SABTU
+  masa            String?  // "14:30-16:00"
+  tempat          String?
+  aktif           Boolean  @default(true)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  guruUtama       Pengguna? @relation("UnitGuruUtama", fields: [guruUtamaId], references: [id])
+  guruPembantu    Pengguna? @relation("UnitGuruPembantu", fields: [guruPembantuId], references: [id])
+
+  keahlian  Keahlian[]
+  sesi      Sesi[]
+  penilaian Penilaian[]
+}
+
+// ---- Keahlian Murid dalam Unit ----
+model Keahlian {
+  id           String   @id @default(cuid())
+  muridId      String
+  unitId       String
+  jawatan      String   @default("AHLI") // PENGERUSI | NAIB | SETIAUSAHA | BENDAHARI | AHLI
+  tarikhSertai DateTime @default(now())
+  aktif        Boolean  @default(true)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  murid Murid @relation(fields: [muridId], references: [id], onDelete: Cascade)
+  unit  Unit  @relation(fields: [unitId], references: [id], onDelete: Cascade)
+
+  @@unique([muridId, unitId])
+}
+
+// ---- Sesi Aktiviti ----
+model Sesi {
+  id         String   @id @default(cuid())
+  unitId     String
+  tajuk      String
+  tarikh     DateTime
+  masaMula   String   // "14:30"
+  masaTamat  String   // "16:00"
+  tempat     String?
+  jenis      String   @default("MINGGUAN") // MINGGUAN | KHAS
+  status     String   @default("DIRANCANG") // DIRANCANG | SELESAI | DIBATALKAN | DITANGGUH
+  sebabBatal String?
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  unit       Unit        @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  kehadiran  Kehadiran[]
+  laporan    LaporanAktiviti?
+}
+
+// ---- Kehadiran Murid bagi Sesi ----
+model Kehadiran {
+  id        String  @id @default(cuid())
+  sesiId    String
+  muridId   String
+  status    String  @default("HADIR") // HADIR | TIDAK_HADIR | LEWAT | SAKIT | URUSAN_RASMI
+  catatan   String?
+  dikunci   Boolean @default(false)
+  updatedAt DateTime @default(now())
+
+  sesi  Sesi  @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+  murid Murid @relation(fields: [muridId], references: [id], onDelete: Cascade)
+
+  @@unique([sesiId, muridId])
+}
+
+// ---- Laporan Aktiviti Guru ----
+model LaporanAktiviti {
+  id              String   @id @default(cuid())
+  sesiId          String   @unique
+  objektif        String?
+  ringkasan       String?
+  hasil           String?
+  masalah         String?
+  cadangan        String?
+  gambar          String?  // JSON array of URLs (disimulasi)
+  status          String   @default("DRAF") // DRAF | DIHANTAR | DIKEMBALIKAN | DILULUSKAN
+  komenSemakan    String?
+  diciptaOlehId   String
+  tarikhHantar    DateTime?
+  tarikhLulus     DateTime?
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  sesi       Sesi     @relation(fields: [sesiId], references: [id], onDelete: Cascade)
+  diciptaOleh Pengguna @relation(fields: [diciptaOlehId], references: [id])
+}
+
+// ---- Penilaian Penglibatan Murid (per semester) ----
+model Penilaian {
+  id            String   @id @default(cuid())
+  muridId       String
+  unitId        String
+  semester      Int      @default(2) // 1 | 2
+  tahun         Int      // tahun akademik e.g. 2026
+  tahap         String   @default("BAIK") // CEMERLANG | BAIK | MEMUASKAN | PERLU_PERHATIAN
+  jawatan       String   @default("AHLI")
+  catatan       String?
+  status        String   @default("DRAF") // DRAF | DIHANTAR | DILULUSKAN
+  diciptaOlehId String?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  murid       Murid     @relation(fields: [muridId], references: [id], onDelete: Cascade)
+  unit        Unit      @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  diciptaOleh Pengguna? @relation(fields: [diciptaOlehId], references: [id])
+
+  @@unique([muridId, unitId, semester, tahun])
+}
+
+// ---- Tetapan Sistem ----
+model Tetapan {
+  id             String   @id @default(cuid())
+  tahunAkademik  Int      @default(2026)
+  semester       Int      @default(2) // 1 | 2
+  tarikhMula     DateTime?
+  tarikhTamat    DateTime?
+  updatedAt      DateTime @updatedAt
+}
+
+// ---- Log Audit ----
+model LogAudit {
+  id          String   @id @default(cuid())
+  penggunaId  String?
+  tindakan    String
+  entiti      String
+  entitiId    String?
+  butiran     String?
+  masa        DateTime @default(now())
+
+  pengguna Pengguna? @relation(fields: [penggunaId], references: [id])
+}
